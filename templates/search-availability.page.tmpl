@@ -1,0 +1,50 @@
+{{template "base" .}}
+{{define "content"}}
+<div class="container">
+
+    <div class="row" id="my-form">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+        <h1>Search For Availability</h1>
+
+        <form action="/search-availability" method="post" class="needs-validation" novalidate>
+          <div class="row">
+            <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">  
+          </div>          
+          <div class="row" id="date-picker-input">
+            <div class ="col-auto">
+              <div class="mb-3">
+                <label for="start_date" class="form-label">Starting Date</label>
+                <input required type="text" class="form-control" id="start_date" name="start_date" aria-describedby="startDateHelp">
+                <div id="emailHelp" class="form-text">Enter starting date YYYY-MM-DD</div>
+              </div>
+            </div>
+            <div class ="col-auto">
+              <div class="mb-3">
+                <label for="end_date" class="form-label">Ending Date</label>
+                <input required type="text" class="form-control" id="end_date" name="end_date" aria-describedby="endDateHelp">
+                <div id="emailHelp" class="form-text">Enter ending date YYYY-MM-DD</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class ="col-auto">
+              <button type="submit" class="btn btn-primary">Search Availability</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>  
+</div>
+
+{{end}}
+
+{{define "js"}}
+<script>
+  const elem = document.getElementById('date-picker-input');
+  const rangepicker = new DateRangePicker(elem, {
+    // ...options
+    format:"yyyy-mm-dd"
+  }); 
+</script>
+{{end}}

@@ -1,15 +1,16 @@
-{{define "base"}}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/css/datepicker-bs4.min.css">
-        <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">    
-        <link rel="stylesheet" type="text/css" href="/statics/css/styles.css">    
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/css/datepicker-bs4.min.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">    
+    <link rel="stylesheet" type="text/css" href="statics/css/styles.css">    
+
+    <title>This is home page</title>
 
 </head>
 <body>
@@ -22,35 +23,74 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/">Home</a>
+                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/about">About</a>
+                <a class="nav-link" href="about.html">About</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Rooms
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/generals-quaters">General's Quater</a></li>
-                  <li><a class="dropdown-item" href="/majors-suite">Major's Suite</a></li>                  
+                  <li><a class="dropdown-item" href="generals.html">General's Quater</a></li>
+                  <li><a class="dropdown-item" href="majors.html">Major's Suite</a></li>                  
                 </ul>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/search-availability">Book Now</a>
+                <a class="nav-link" href="reservation.html">Book Now</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/contact">Contact</a>
+                <a class="nav-link" href="contact.html">Contact</a>
               </li>
             </ul>
           </div>
         </div>
-    </nav>
+     </nav>
+    
+    <div class="container">
 
-    {{block "content" .}}
+        <div class="row" id="my-form">
+          <div class="col-md-3"></div>
+          <div class="col-md-6">
+            <h1>Search For Availability</h1>
 
-    {{end}}
+            <form action="reservation.html" method="get" class="needs-validation" novalidate>
+              <div class="row">
+                <div class ="col-auto">
+                  <div class="mb-3">
+                    <label for="start_date" class="form-label">Starting Date</label>
+                    <input required type="text" class="form-control" id="start_date" name="start_date" aria-describedby="startDateHelp">
+                    <div id="emailHelp" class="form-text">Enter starting date YYYY-MM-DD</div>
+                  </div>
+                </div>
+                <div class ="col-auto">
+                  <div class="mb-3">
+                    <label for="end_date" class="form-label">Ending Date</label>
+                    <input required type="text" class="form-control" id="end_date" name="end_date" aria-describedby="endDateHelp">
+                    <div id="emailHelp" class="form-text">Enter ending date YYYY-MM-DD</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class ="col-auto">
+                  <button type="submit" class="btn btn-primary">Search Availability</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
 
+        <div class="row">
+          <div class="col">
+            <p id="test_paragraph">This is some text</p>
+            <p>
+              <button id="color-button" class="btn  btn-outline-secondary">Click</button>
+            </p>
+          </div>
+        </div>
+    </div>
+    
     <div class="row my-footer">
         <div class="col">Left</div>
         <div class="col">Middle</div>
@@ -62,10 +102,6 @@
     <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/js/datepicker-full.min.js"></script>
     <script src="https://unpkg.com/notie"></script> 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>       
-
-    {{block "js" .}}
-    
-    {{end}}
 
     <script>
       let attention=prompt();
@@ -94,8 +130,17 @@
 
 
       let myEl = document.getElementById("test_paragraph");            
+      document.getElementById("color-button").addEventListener("click",function(){        
+        notifyModal("title","<em>helloworld</em>","success","text for button")
+      });
 
-      function notify(msg,type){        
+      const elem = document.getElementById('my-form');
+      const rangepicker = new DateRangePicker(elem, {
+        // ...options
+        format:"yyyy-mm-dd"
+      }); 
+
+      function notify(msg,type){
         notie.alert({
           type: type, // optional, default = 4, enum: [1, 2, 3, 4, 5, 'success', 'warning', 'error', 'info', 'neutral']
           text: msg,          
@@ -123,16 +168,6 @@
         `
         attention.custom({msg:html,title:"Choose Your Date"})
       }
-
-      {{with .Error}}
-        notify("{{.}}","error")
-      {{end}}
-      {{with .Flash}}
-        notify("{{.}}","success")
-      {{end}}
-      {{with .Warning}}
-        notify("{{.}}","warning")
-      {{end}}
 
       function prompt(){
           let toast = function(c){
@@ -195,16 +230,20 @@
             title="",
 
           } = c;
-          const { value: result } = await Swal.fire({
+          const { value: formValues } = await Swal.fire({
             title: title,
             backdrop:false,
             html: msg,              
             focusConfirm: false,            
             showCancelButton: true,
             willOpen: () => {
-              if(c.willOpen !== undefined){
-                c.willOpen();
-              }
+              const elem = document.getElementById("reservation-dates-modal")
+              const rangepicker = new DateRangePicker(elem, {
+                // ...options
+                format:"yyyy-mm-dd",
+                showOnFocus:true,
+                orientation:"auto top",
+              }); 
             },
             preConfirm: () => {
               return [
@@ -213,24 +252,13 @@
               ]
             },
             didOpen: () => {
-              if(c.didOpen !== undefined){
-                c.didOpen();
-              }              
+              document.getElementById("start").removeAttribute("disabled")
+              document.getElementById("end").removeAttribute("disabled")
             },
           })
 
-          if (result) {
-            if(result.dismis !== Swal.DismissReason.cancel){
-              if(result.value !==""){
-                if(c.callback !== undefined){
-                  c.callback(result);
-                } 
-              } else {
-                c.callback(false);
-              }
-            } else {
-              c.callback(false);
-            }
+          if (formValues) {
+            Swal.fire(JSON.stringify(formValues))
           }
         }
 
@@ -242,7 +270,5 @@
         }
       }
     </script>
-
 </body>
 </html>
-{{end}}

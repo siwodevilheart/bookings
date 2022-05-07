@@ -8,9 +8,12 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/siwodevilheart/bookings/pkg/config"
-	"github.com/siwodevilheart/bookings/pkg/models"
+	"github.com/justinas/nosurf"
+	"github.com/siwodevilheart/bookings/internal/config"
+	"github.com/siwodevilheart/bookings/internal/models"
 )
+
+var pathToTemples = "./templates"
 
 var app *config.AppConfig
 
@@ -18,12 +21,16 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefaultData(td *models.TmplData) *models.TmplData {
+func AddDefaultData(td *models.TmplData, r *http.Request) *models.TmplData {
+	td.Flash = app.Session.PopString(r.Context(), "flash")
+	td.Error = app.Session.PopString(r.Context(), "error")
+	td.Warning = app.Session.PopString(r.Context(), "warning")
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
 // RenderTemplate renders a template
-func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TmplData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TmplData) {
 	var tc map[string]*template.Template
 	if app.UseCache {
 		tc = (*app).TmplCache
@@ -37,7 +44,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TmplData) {
 	}
 
 	buf := new(bytes.Buffer)
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 	_ = t.Execute(buf, td)
 
 	_, err := buf.WriteTo(w)
@@ -51,7 +58,7 @@ var functions = template.FuncMap{}
 
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
-	pages, err := filepath.Glob("./templates/*.page.tmpl")
+	pages, err := filepath.Glob(fmt.Sprintf("%s/*.page.tmpl", pathToTemples))
 	if err != nil {
 		return myCache, err
 	}
@@ -63,13 +70,13 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 			return myCache, err
 		}
 
-		match, err := filepath.Glob("./templates/*.layout.tmpl")
+		match, err := filepath.Glob(fmt.Sprintf("%s/*.layout.tmpl", pathToTemples))
 		if err != nil {
 			return myCache, err
 		}
 
 		if len(match) > 0 {
-			ts, err = ts.ParseGlob("./templates/*.layout.tmpl")
+			ts, err = ts.ParseGlob(fmt.Sprintf("%s/*.layout.tmpl", pathToTemples))
 			if err != nil {
 				return myCache, err
 			}
